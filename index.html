@@ -1,328 +1,80 @@
--- SERVICIOS NATIVOS
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Keys - Official Apex Cheaters</title>
+    <style>
+        body {
+            background-color: #13131a;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .container {
+            background-color: #1c1c24;
+            border: 2px solid #8a2be2;
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 { color: #8a2be2; margin-bottom: 5px; }
+        p { color: #aaaaaa; }
+        .key-box {
+            background-color: #282836;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ff00;
+            border-radius: 5px;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+        button {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #a043f7; }
+    </style>
+</head>
+<body>
 
--- CONFIGURACIÓN GLOBAL
-local Config = {
-    ScriptActivo = true,
-    ESP_Activo = true,          
-    ParteCuerpo = "HumanoidRootPart", -- Objetivo del imán brusco
-    RadioAim = 130                    -- Rango de activación de la mira
-}
+<div class="container">
+    <h1>Apex Cheaters</h1>
+    <p>Tu clave de acceso para el script de hoy:</p>
+    <div class="key-box" id="keyDisplay">Cargando...</div>
+    <button onclick="copyKey()">Copiar Key</button>
+</div>
 
-local LocalPlayer = Players.LocalPlayer
-local Camara = Workspace.CurrentCamera
-local ObjetivoActual = nil
-local CacheESP = {}
-
----
---- 1. INTERFAZ DE USUARIO VIP (PANEL FLOTANTE)
----
-local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-ScreenGui.Name = "VIP_AbsoluteFix_Panel"
-ScreenGui.ResetOnSpawn = false
-
-local FramePrincipal = Instance.new("Frame", ScreenGui)
-FramePrincipal.Size = UDim2.new(0, 240, 0, 220)
-FramePrincipal.Position = UDim2.new(0.5, -120, 0.5, -110)
-FramePrincipal.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-FramePrincipal.BorderSizePixel = 0
-Instance.new("UICorner", FramePrincipal).CornerRadius = UDim.new(0, 8)
-
-local Titulo = Instance.new("TextLabel", FramePrincipal)
-Titulo.Size = UDim2.new(1, 0, 0, 40)
-Titulo.Text = "  ESP TOTAL FORCE + IMÁN BRUSCO"
-Titulo.TextColor3 = Color3.fromRGB(0, 255, 0)
-Titulo.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Titulo.TextXAlignment = Enum.TextXAlignment.Left
-Titulo.Font = Enum.Font.SourceSansBold
-Titulo.TextSize = 14
-Instance.new("UICorner", Titulo).CornerRadius = UDim.new(0, 8)
-
-local CerrarBtn = Instance.new("TextButton", FramePrincipal)
-CerrarBtn.Size = UDim2.new(0, 35, 0, 35)
-CerrarBtn.Position = UDim2.new(1, -40, 0, 2)
-CerrarBtn.Text = "X"
-CerrarBtn.TextColor3 = Color3.fromRGB(255, 85, 85)
-CerrarBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-CerrarBtn.Font = Enum.Font.SourceSansBold
-CerrarBtn.TextSize = 18
-Instance.new("UICorner", CerrarBtn).CornerRadius = UDim.new(0, 6)
-
-local CuadradoVIP = Instance.new("TextButton", ScreenGui)
-CuadradoVIP.Size = UDim2.new(0, 60, 0, 60)
-CuadradoVIP.Position = UDim2.new(0.1, 0, 0.1, 0)
-CuadradoVIP.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CuadradoVIP.BorderSizePixel = 3
-CuadradoVIP.BorderColor3 = Color3.fromRGB(0, 255, 0)
-CuadradoVIP.Text = "VIP"
-CuadradoVIP.TextColor3 = Color3.fromRGB(0, 255, 0)
-CuadradoVIP.Font = Enum.Font.SourceSansBold
-CuadradoVIP.TextSize = 20
-CuadradoVIP.Visible = false
-Instance.new("UICorner", CuadradoVIP).CornerRadius = UDim.new(0, 6)
-
-CerrarBtn.MouseButton1Click:Connect(function() FramePrincipal.Visible = false; CuadradoVIP.Visible = true end)
-CuadradoVIP.MouseButton1Click:Connect(function() FramePrincipal.Visible = true; CuadradoVIP.Visible = false end)
-
-local function ConfigurarArrastre(instanciaFrame)
-    local arrastrando, inicioArrastre, posicionInicial
-    instanciaFrame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            arrastrando = true; inicioArrastre = input.Position; posicionInicial = instanciaFrame.Position
-            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then arrastrando = false end end)
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if arrastrando and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = input.Position - inicioArrastre
-            instanciaFrame.Position = UDim2.new(posicionInicial.X.Scale, posicionInicial.X.Offset + delta.X, posicionInicial.Y.Scale, posicionInicial.Y.Offset + delta.Y)
-        end
-    end)
-end
-ConfigurarArrastre(FramePrincipal)
-ConfigurarArrastre(CuadradoVIP)
-
-local function CrearToggle(texto, yPos, key)
-    local Boton = Instance.new("TextButton", FramePrincipal)
-    Boton.Size = UDim2.new(1, -20, 0, 40)
-    Boton.Position = UDim2.new(0, 10, 0, yPos)
-    Boton.Font = Enum.Font.SourceSansBold
-    Boton.TextSize = 14
-    Boton.BorderSizePixel = 0
-    Instance.new("UICorner", Boton).CornerRadius = UDim.new(0, 5)
-    
-    local function Renderizar()
-        if Config[key] then
-            Boton.Text = texto .. ": [ ACTIVO ]"; Boton.BackgroundColor3 = Color3.fromRGB(46, 117, 89); Boton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        else
-            Boton.Text = texto .. ": [ INACTIVO ]"; Boton.BackgroundColor3 = Color3.fromRGB(55, 55, 55); Boton.TextColor3 = Color3.fromRGB(160, 160, 160)
-        end
-    end
-    Boton.MouseButton1Click:Connect(function() Config[key] = not Config[key]; Renderizar() end)
-    Renderizar()
-end
-
-CrearToggle("Imán Brusco Activo", 60, "ScriptActivo")
-CrearToggle("Visuales ESP Completo", 110, "ESP_Activo")
-
----
---- 2. MOTOR ESTRUCTURAL DEL ESP (CREACIÓN NATIVA DE LÍNEAS)
----
-local function LimpiarESP(jugador)
-    if CacheESP[jugador] then
-        local esp = CacheESP[jugador]
-        pcall(function()
-            esp.Soga.Visible = false; esp.Soga:Remove()
-            esp.TextoInfo.Visible = false; esp.TextoInfo:Remove()
-            for _, esquina in pairs(esp.Esquinas) do esquina.Visible = false; esquina:Remove() end
-            for _, hueso in pairs(esp.Huesos) do hueso.Visible = false; hueso:Remove() end
-        end)
-        CacheESP[jugador] = nil
-    end
-end
-
-local function CrearDibujosESP(jugador)
-    if CacheESP[jugador] then return end
-
-    local Estructura = {
-        Soga = Drawing.new("Line"),       
-        TextoInfo = Drawing.new("Text"),   
-        Esquinas = {},                     
-        Huesos = {}                        
+<script>
+    function generarKey() {
+        const ahora = new Date();
+        const year = ahora.getUTCFullYear();
+        const month = ahora.getUTCMonth(); 
+        const day = ahora.getUTCDate();
+        
+        // Mismo cálculo matemático que usa tu script de Roblox
+        const secret = Math.floor((year + month + day) * 7.7);
+        document.getElementById('keyDisplay').innerText = "APEX-" + secret + "-KEY";
     }
 
-    Estructura.Soga.Color = Color3.fromRGB(0, 255, 0) 
-    Estructura.Soga.Thickness = 2
-    Estructura.Soga.Transparency = 1
-    Estructura.Soga.Visible = false
+    function copyKey() {
+        const text = document.getElementById('keyDisplay').innerText;
+        navigator.clipboard.writeText(text);
+        alert("¡Key copiada al portapapeles!");
+    }
 
-    Estructura.TextoInfo.Color = Color3.fromRGB(255, 255, 255)
-    Estructura.TextoInfo.Size = 13
-    Estructura.TextoInfo.Center = true
-    Estructura.TextoInfo.Outline = true
-    Estructura.TextoInfo.OutlineColor = Color3.fromRGB(0, 0, 0)
-    Estructura.TextoInfo.Visible = false
+    generarKey();
+</script>
 
-    for i = 1, 8 do
-        local LineaCuadro = Drawing.new("Line")
-        LineaCuadro.Color = Color3.fromRGB(0, 255, 0)
-        LineaCuadro.Thickness = 2
-        LineaCuadro.Transparency = 1
-        LineaCuadro.Visible = false
-        table.insert(Estructura.Esquinas, LineaCuadro)
-    end
-
-    for i = 1, 6 do
-        local LineaHueso = Drawing.new("Line")
-        LineaHueso.Color = Color3.fromRGB(255, 255, 255) 
-        LineaHueso.Thickness = 1.2
-        LineaHueso.Transparency = 1
-        LineaHueso.Visible = false
-        table.insert(Estructura.Huesos, LineaHueso)
-    end
-
-    CacheESP[jugador] = Estructura
-end
-
-local function ConectarPuntosHueso(lineaDrawing, parteA, parteB)
-    if parteA and parteB then
-        local posA, pantA = Camara:WorldToViewportPoint(parteA.Position)
-        local posB, pantB = Camara:WorldToViewportPoint(parteB.Position)
-        if pantA and pantB then
-            lineaDrawing.From = Vector2.new(posA.X, posA.Y)
-            lineaDrawing.To = Vector2.new(posB.X, posB.Y)
-            lineaDrawing.Visible = true
-            return
-        end
-    end
-    lineaDrawing.Visible = false
-end
-
--- Limpieza preventiva cuando abandonan la sala
-Players.PlayerRemoving:Connect(LimpiarESP)
-
----
---- 3. ESCANEO REDUNDANTE CONTINUO (SOLUCIÓN AL FALLO DE JUGADORES)
----
-local function ActualizarESP()
-    for _, jugador in ipairs(Players:GetPlayers()) do
-        if jugador ~= LocalPlayer then
-            local char = jugador.Character
-            local root = char and char:FindFirstChild("HumanoidRootPart")
-            local head = char and char:FindFirstChild("Head")
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
-
-            -- SI EL JUGADOR EXISTE Y TIENE SUS PARTES CARGADAS, ASEGURAMOS QUE TENGA ESP
-            if root and head and hum then
-                -- Si por alguna razón el juego lo descargó y volvió a cargar, forzamos la estructura aquí mismo
-                if not CacheESP[jugador] and Config.ESP_Activo then
-                    CrearDibujosESP(jugador)
-                end
-
-                local esp = CacheESP[jugador]
-
-                if hum.Health <= 0 then
-                    -- Si está muerto, ocultamos temporalmente los dibujos para no saturar la pantalla
-                    if esp then
-                        esp.Soga.Visible = false
-                        esp.TextoInfo.Visible = false
-                        for _, esquina in pairs(esp.Esquinas) do esquina.Visible = false end
-                        for _, hueso in pairs(esp.Huesos) do hueso.Visible = false end
-                    end
-                elseif Config.ESP_Activo and esp then
-                    local posCuerpo, enPantalla = Camara:WorldToViewportPoint(root.Position)
-                    
-                    if enPantalla then
-                        local posCabeza = Camara:WorldToViewportPoint(head.Position + Vector3.new(0, 1.6, 0))
-                        local posPies = Camara:WorldToViewportPoint(root.Position - Vector3.new(0, 3, 0))
-                        
-                        local altoBox = math.abs(posCabeza.Y - posPies.Y)
-                        local anchoBox = altoBox * 0.55
-                        local posX = posCuerpo.X - (anchoBox / 2)
-                        local posY = posCabeza.Y
-
-                        -- 1. Soga/Línea Verde desde la parte superior central de la pantalla
-                        esp.Soga.From = Vector2.new(Camara.ViewportSize.X / 2, 0)
-                        esp.Soga.To = Vector2.new(posCuerpo.X, posY)
-                        esp.Soga.Visible = true
-
-                        -- 2. Nombre, Puntos de vida y Distancia exacta en metros
-                        local localRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                        local metros = localRoot and math.floor((root.Position - localRoot.Position).Magnitude) or 0
-                        esp.TextoInfo.Text = jugador.Name .. "\nHP: " .. math.floor(hum.Health) .. " | " .. metros .. "m"
-                        esp.TextoInfo.Position = Vector2.new(posCuerpo.X, posY - 35)
-                        esp.TextoInfo.Visible = true
-
-                        -- 3. Cuadros delimitadores (Esquinas)
-                        local l = anchoBox * 0.25
-                        local esq = esp.Esquinas
-                        
-                        esq[1].From = Vector2.new(posX, posY); esq[1].To = Vector2.new(posX + l, posY); esq[1].Visible = true
-                        esq[2].From = Vector2.new(posX, posY); esq[2].To = Vector2.new(posX, posY + l); esq[2].Visible = true
-                        esq[3].From = Vector2.new(posX + anchoBox, posY); esq[3].To = Vector2.new(posX + anchoBox - l, posY); esq[3].Visible = true
-                        esq[4].From = Vector2.new(posX + anchoBox, posY); esq[4].To = Vector2.new(posX + anchoBox, posY + l); esq[4].Visible = true
-                        esq[5].From = Vector2.new(posX, posY + altoBox); esq[5].To = Vector2.new(posX + l, posY + altoBox); esq[5].Visible = true
-                        esq[6].From = Vector2.new(posX, posY + altoBox); esq[6].To = Vector2.new(posX, posY + altoBox - l); esq[6].Visible = true
-                        esq[7].From = Vector2.new(posX + anchoBox, posY + altoBox); esq[7].To = Vector2.new(posX + anchoBox - l, posY + altoBox); esq[7].Visible = true
-                        esq[8].From = Vector2.new(posX + anchoBox, posY + altoBox); esq[8].To = Vector2.new(posX + anchoBox, posY + altoBox - l); esq[8].Visible = true
-
-                        -- 4. Esqueleto Óseo Interno (Soporte R6 y R15)
-                        local upperTorso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso")
-                        local leftArm = char:FindFirstChild("LeftUpperArm") or char:FindFirstChild("Left Arm")
-                        local rightArm = char:FindFirstChild("RightUpperArm") or char:FindFirstChild("Right Arm")
-                        local leftLeg = char:FindFirstChild("LeftUpperLeg") or char:FindFirstChild("Left Leg")
-                        local rightLeg = char:FindFirstChild("RightUpperLeg") or char:FindFirstChild("Right Leg")
-
-                        ConectarPuntosHueso(esp.Huesos[1], head, upperTorso)
-                        ConectarPuntosHueso(esp.Huesos[2], upperTorso, root)
-                        ConectarPuntosHueso(esp.Huesos[3], upperTorso, leftArm)
-                        ConectarPuntosHueso(esp.Huesos[4], upperTorso, rightArm)
-                        ConectarPuntosHueso(esp.Huesos[5], root, leftLeg)
-                        ConectarPuntosHueso(esp.Huesos[6], root, rightLeg)
-                    else
-                        -- Si el personaje está cargado pero fuera de tu campo visual, ocultamos las líneas
-                        esp.Soga.Visible = false
-                        esp.TextoInfo.Visible = false
-                        for _, esquina in pairs(esp.Esquinas) do esquina.Visible = false end
-                        for _, hueso in pairs(esp.Huesos) do hueso.Visible = false end
-                    end
-                end
-            else
-                -- Si el personaje no tiene sus partes básicas en el Workspace (invisibles o demasiado lejos), limpiamos caché
-                LimpiarESP(jugador)
-            end
-        end
-    end
-end
-
----
---- 4. DETECCIÓN EN MIRA PARA EL ENFOQUE BRUSCO
----
-local function ObtenerEnemigoCercanoAMira()
-    local PersonajeLocal = LocalPlayer.Character
-    if not PersonajeLocal or not PersonajeLocal:FindFirstChild("HumanoidRootPart") then return nil end
-    
-    local ObjetivoSeleccionado = nil
-    local MenorDistanciaCentro = Config.RadioAim
-
-    for _, Jugador in ipairs(Players:GetPlayers()) do
-        if Jugador ~= LocalPlayer and Jugador.Character then
-            local pecho = Jugador.Character:FindFirstChild(Config.ParteCuerpo)
-            local hum = Jugador.Character:FindFirstChildOfClass("Humanoid")
-            
-            if pecho and hum and hum.Health > 0 then
-                local posPantalla, enPantalla = Camara:WorldToViewportPoint(pecho.Position)
-                if enPantalla then
-                    local distanciaCentro = (Vector2.new(posPantalla.X, posPantalla.Y) - Vector2.new(Camara.ViewportSize.X / 2, Camara.ViewportSize.Y / 2)).Magnitude
-                    if distanciaCentro < MenorDistanciaCentro then
-                        MenorDistanciaCentro = distanciaCentro
-                        ObjetivoSeleccionado = pecho
-                    end
-                end
-            end
-        end
-    end
-    return ObjetivoSeleccionado
-end
-
----
---- 5. BUCLE CENTRAL PRINCIPAL (RENDER STEPPED CONSTANTE)
----
-RunService.RenderStepped:Connect(function()
-    -- Ejecuta el escaneo de jugadores e inyección de ESP en cada fotograma
-    ActualizarESP()
-    
-    if not Config.ScriptActivo then return end
-    
-    ObjetivoActual = ObtenerEnemigoCercanoAMira()
-    
-    if ObjetivoActual then
-        -- Fijación rígida inmediata al detectar al jugador en el rango de la mira
-        Camara.CFrame = CFrame.lookAt(Camara.CFrame.Position, ObjetivoActual.Position)
-    else
-        ObjetivoActual = nil
-    end
-end)
+</body>
+</html>
