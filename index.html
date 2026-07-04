@@ -3,77 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Keys - Official Apex Cheaters</title>
+    <title>Generador Ultra Masivo Pro</title>
     <style>
         body {
-            background-color: #13131a;
-            color: white;
+            background-color: #111111;
+            color: #ffffff;
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
         }
         .container {
-            background-color: #1c1c24;
-            border: 2px solid #8a2be2;
-            padding: 30px;
-            border-radius: 10px;
-            display: inline-block;
-            max-width: 400px;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 420px;
             width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
         }
-        h1 { color: #8a2be2; margin-bottom: 5px; }
-        p { color: #aaaaaa; }
-        .key-box {
-            background-color: #282836;
-            padding: 15px;
-            font-size: 20px;
+        .badge {
+            background-color: rgba(255, 140, 0, 0.1);
+            border: 1px solid #ff8c00;
+            color: #ff8c00;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: bold;
-            color: #00ff00;
-            border-radius: 5px;
-            margin: 20px 0;
-            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 20px;
         }
-        button {
-            background-color: #8a2be2;
-            color: white;
-            border: none;
-            padding: 12px 25px;
+        h2 {
+            color: #00ffcc;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #222222;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .row span {
+            color: #b3b3b3;
             font-size: 16px;
             font-weight: bold;
-            border-radius: 5px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-counter {
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: #00ffcc;
+            font-size: 18px;
+            font-weight: bold;
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
             cursor: pointer;
         }
-        button:hover { background-color: #a043f7; }
+        .btn-counter.minus {
+            color: #ff4444;
+        }
+        .display-val {
+            background-color: #111111;
+            border: 1px solid #444;
+            color: white;
+            width: 60px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        .result-box {
+            background-color: #222222;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0 12px 0;
+            border: 1px dashed #444;
+            letter-spacing: 1px;
+        }
+        .btn-main {
+            background-color: #00ffaa;
+            color: #111111;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-main:hover {
+            background-color: #00cc88;
+        }
+        .status-text {
+            color: #666666;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #333;
+            margin: 20px 0;
+        }
+        .section-title {
+            color: #ff9900;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        select {
+            background-color: #222222;
+            color: white;
+            border: 1px solid #444;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .btn-download {
+            background-color: #ffaa00;
+            color: #111111;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Apex Cheaters</h1>
-    <p>Tu clave de acceso para el script de hoy:</p>
-    <div class="key-box" id="keyDisplay">Cargando...</div>
-    <button onclick="copyKey()">Copiar Key</button>
+    <div class="badge">🛡️ MOTOR MASIVO V3.5 (PARCHEADO)</div>
+    <h2>Generador Unitaria</h2>
+
+    <div class="row">
+        <span>Años adicionales</span>
+        <div class="controls">
+            <button class="btn-counter minus" onclick="changeVal('anos', -1)">-</button>
+            <div id="anos" class="display-val">0</div>
+            <button class="btn-counter" onclick="changeVal('anos', 1)">+</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <span>Meses adicionales</span>
+        <div class="controls">
+            <button class="btn-counter minus" onclick="changeVal('meses', -1)">-</button>
+            <div id="meses" class="display-val">0</div>
+            <button class="btn-counter" onclick="changeVal('meses', 1)">+</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <span>Semanas adicionales</span>
+        <div class="controls">
+            <button class="btn-counter minus" onclick="changeVal('semanas', -1)">-</button>
+            <div id="semanas" class="display-val">0</div>
+            <button class="btn-counter" onclick="changeVal('semanas', 1)">+</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <span>Días adicionales</span>
+        <div class="controls">
+            <button class="btn-counter minus" onclick="changeVal('dias', -1)">-</button>
+            <div id="dias" class="display-val">0</div>
+            <button class="btn-counter" onclick="changeVal('dias', 1)">+</button>
+        </div>
+    </div>
+
+    <div class="result-box" id="outputPass">Presiona Generar</div>
+    
+    <button class="btn-main" onclick="generarPassword()">Generar Una Contraseña</button>
+    <div class="status-text">Listo.</div>
+
+    <hr>
+
+    <div class="section-title">Generador de Packs Masivos</div>
+    <select id="packSize">
+        <option value="100">Generar Pack de 100 días futuros</option>
+        <option value="500">Generar Pack de 500 días futuros</option>
+        <option value="1000">Generar Pack de 1000 días futuros</option>
+    </select>
+
+    <button class="btn-download" onclick="descargarPack()">Descargar Pack (.txt)</button>
 </div>
 
 <script>
-    function generarKey() {
+    function changeVal(id, amount) {
+        let el = document.getElementById(id);
+        let current = parseInt(el.innerText);
+        let newVal = current + amount;
+        if (newVal >= 0) {
+            el.innerText = newVal;
+        }
+    }
+
+    // Calcula la clave vinculando la fecha actual + las modificaciones manuales de los botones
+    function generarPassword() {
         const ahora = new Date();
-        const year = ahora.getUTCFullYear();
-        const month = ahora.getUTCMonth(); 
-        const day = ahora.getUTCDate();
         
-        // Mismo cálculo matemático que usa tu script de Roblox
+        let addAnos = parseInt(document.getElementById('anos').innerText);
+        let addMeses = parseInt(document.getElementById('meses').innerText);
+        let addSemanas = parseInt(document.getElementById('semanas').innerText);
+        let addDias = parseInt(document.getElementById('dias').innerText);
+
+        let year = ahora.getUTCFullYear() + addAnos;
+        let month = ahora.getUTCMonth() + addMeses; 
+        let day = ahora.getUTCDate() + addDias + (addSemanas * 7);
+        
+        // Fórmula matemática exacta de tu script
         const secret = Math.floor((year + month + day) * 7.7);
-        document.getElementById('keyDisplay').innerText = "APEX-" + secret + "-KEY";
+        document.getElementById('outputPass').innerText = "APEX-" + secret + "-KEY";
     }
 
-    function copyKey() {
-        const text = document.getElementById('keyDisplay').innerText;
-        navigator.clipboard.writeText(text);
-        alert("¡Key copiada al portapapeles!");
-    }
+    // Crea un pack masivo de claves consecutivas (para los siguientes días) en un .txt
+    function descargarPack() {
+        const cantidad = parseInt(document.getElementById('packSize').value);
+        let contenido = '';
+        
+        const ahora = new Date();
+        let baseYear = ahora.getUTCFullYear();
+        let baseMonth = ahora.getUTCMonth();
+        let baseDay = ahora.getUTCDate();
 
-    generarKey();
+        for (let i = 0; i < cantidad; i++) {
+            let tempDay = baseDay + i;
+            let secret = Math.floor((baseYear + baseMonth + tempDay) * 7.7);
+            contenido += "APEX-" + secret + "-KEY\n";
+        }
+
+        const blob = new Blob([contenido], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `pack_${cantidad}_keys.txt`;
+        link.click();
+    }
 </script>
 
 </body>
