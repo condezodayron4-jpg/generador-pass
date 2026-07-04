@@ -14,6 +14,7 @@
             align-items: center;
             padding: 20px;
             margin: 0;
+            min-height: 100vh;
         }
         .container {
             background-color: #1a1a1a;
@@ -26,9 +27,9 @@
             text-align: center;
         }
         .badge {
-            background-color: rgba(255, 140, 0, 0.1);
-            border: 1px solid #ff8c00;
-            color: #ff8c00;
+            background-color: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
             padding: 6px 15px;
             border-radius: 20px;
             font-size: 12px;
@@ -36,12 +37,7 @@
             display: inline-block;
             margin-bottom: 20px;
         }
-        h2 {
-            color: #00ffcc;
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
+        h2 { color: #00ffcc; margin-top: 0; margin-bottom: 25px; font-size: 24px; }
         .row {
             display: flex;
             justify-content: space-between;
@@ -51,16 +47,8 @@
             border-radius: 8px;
             margin-bottom: 12px;
         }
-        .row span {
-            color: #b3b3b3;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .row span { color: #b3b3b3; font-size: 16px; font-weight: bold; }
+        .controls { display: flex; align-items: center; gap: 10px; }
         .btn-counter {
             background-color: #2d2d2d;
             border: 1px solid #444;
@@ -72,197 +60,111 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        .btn-counter.minus {
-            color: #ff4444;
+        .btn-counter.minus { color: #ff4444; }
+        .value-display { font-size: 18px; font-weight: bold; width: 30px; text-align: center; }
+        
+        .key-box {
+            background-color: #282836;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00ff00;
+            border-radius: 8px;
+            margin: 20px 0 10px 0;
+            letter-spacing: 1px;
+            border: 1px dashed #00ff00;
         }
-        .display-val {
-            background-color: #111111;
-            border: 1px solid #444;
-            color: white;
-            width: 60px;
-            text-align: center;
-            padding: 6px 0;
+        .timer-box {
+            font-size: 13px;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .btn-main {
+            background-color: #00ea9c;
+            color: #111;
+            border: none;
+            padding: 14px 25px;
             font-size: 16px;
             font-weight: bold;
             border-radius: 6px;
-        }
-        .result-box {
-            background-color: #222222;
-            color: #00ff00;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 20px 0 12px 0;
-            border: 1px dashed #444;
-            letter-spacing: 1px;
-        }
-        .btn-main {
-            background-color: #00ffaa;
-            color: #111111;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-main:hover {
-            background-color: #00cc88;
-        }
-        .status-text {
-            color: #666666;
-            font-size: 14px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-        hr {
-            border: 0;
-            border-top: 1px solid #333;
-            margin: 20px 0;
-        }
-        .section-title {
-            color: #ff9900;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        select {
-            background-color: #222222;
-            color: white;
-            border: 1px solid #444;
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            margin-bottom: 15px;
-            outline: none;
+            transition: 0.2s;
         }
-        .btn-download {
-            background-color: #ffaa00;
-            color: #111111;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+        .btn-main:hover { background-color: #00ffcc; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="badge">🛡️ MOTOR MASIVO V3.5 (PARCHEADO)</div>
+    <div class="badge" id="topBadge">MOTOR MASIVO V3.5</div>
     <h2>Generador Unitaria</h2>
 
-    <div class="row">
-        <span>Años adicionales</span>
-        <div class="controls">
-            <button class="btn-counter minus" onclick="changeVal('anos', -1)">-</button>
-            <div id="anos" class="display-val">0</div>
-            <button class="btn-counter" onclick="changeVal('anos', 1)">+</button>
-        </div>
-    </div>
+    <div class="row"><span>Años adicionales</span><div class="controls"><button class="btn-counter minus" onclick="change('year',-1)">-</button><div class="value-display" id="year">0</div><button class="btn-counter" onclick="change('year',1)">+</button></div></div>
+    <div class="row"><span>Meses adicionales</span><div class="controls"><button class="btn-counter minus" onclick="change('month',-1)">-</button><div class="value-display" id="month">0</div><button class="btn-counter" onclick="change('month',1)">+</button></div></div>
+    <div class="row"><span>Semanas adicionales</span><div class="controls"><button class="btn-counter minus" onclick="change('week',-1)">-</button><div class="value-display" id="week">0</div><button class="btn-counter" onclick="change('week',1)">+</button></div></div>
+    <div class="row"><span>Días adicionales</span><div class="controls"><button class="btn-counter minus" onclick="change('day',-1)">-</button><div class="value-display" id="day">0</div><button class="btn-counter" onclick="change('day',1)">+</button></div></div>
 
-    <div class="row">
-        <span>Meses adicionales</span>
-        <div class="controls">
-            <button class="btn-counter minus" onclick="changeVal('meses', -1)">-</button>
-            <div id="meses" class="display-val">0</div>
-            <button class="btn-counter" onclick="changeVal('meses', 1)">+</button>
-        </div>
-    </div>
+    <div class="key-box" id="keyDisplay">APEX-CARGANDO-KEY</div>
+    <div class="timer-box" id="timerDisplay">Calculando tiempo de vida...</div>
 
-    <div class="row">
-        <span>Semanas adicionales</span>
-        <div class="controls">
-            <button class="btn-counter minus" onclick="changeVal('semanas', -1)">-</button>
-            <div id="semanas" class="display-val">0</div>
-            <button class="btn-counter" onclick="changeVal('semanas', 1)">+</button>
-        </div>
-    </div>
-
-    <div class="row">
-        <span>Días adicionales</span>
-        <div class="controls">
-            <button class="btn-counter minus" onclick="changeVal('dias', -1)">-</button>
-            <div id="dias" class="display-val">0</div>
-            <button class="btn-counter" onclick="changeVal('dias', 1)">+</button>
-        </div>
-    </div>
-
-    <div class="result-box" id="outputPass">Presiona Generar</div>
-    
-    <button class="btn-main" onclick="generarPassword()">Generar Una Contraseña</button>
-    <div class="status-text">Listo.</div>
-
-    <hr>
-
-    <div class="section-title">Generador de Packs Masivos</div>
-    <select id="packSize">
-        <option value="100">Generar Pack de 100 días futuros</option>
-        <option value="500">Generar Pack de 500 días futuros</option>
-        <option value="1000">Generar Pack de 1000 días futuros</option>
-    </select>
-
-    <button class="btn-download" onclick="descargarPack()">Descargar Pack (.txt)</button>
+    <button class="btn-main" onclick="copiarKey()">Copiar Contraseña / Key</button>
 </div>
 
 <script>
-    function changeVal(id, amount) {
-        let el = document.getElementById(id);
-        let current = parseInt(el.innerText);
-        let newVal = current + amount;
-        if (newVal >= 0) {
-            el.innerText = newVal;
+    let config = { year: 0, month: 0, week: 0, day: 0 };
+
+    function change(type, val) {
+        config[type] = Math.max(0, config[type] + val);
+        document.getElementById(type).innerText = config[type];
+        generarKey();
+    }
+
+    function generarKey() {
+        let ahora = new Date();
+        
+        // Sumar los valores adicionales elegidos por el usuario
+        let year = ahora.getUTCFullYear() + config.year;
+        let month = ahora.getUTCMonth() + config.month;
+        let day = ahora.getUTCDate() + config.day + (config.week * 7);
+        
+        let secret = Math.floor((year + month + day) * 7.7);
+        
+        let linkBadge = document.getElementById("topBadge");
+        let timerText = document.getElementById("timerDisplay");
+
+        // Si todos los selectores están en 0, significa clave del día actual (vence en 24h)
+        if(config.year === 0 && config.month === 0 && config.week === 0 && config.day === 0) {
+            let tiempoRestanteMs = new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate() + 1)) - ahora;
+            let horas = Math.floor(tiempoRestanteMs / (1000 * 60 * 60));
+            let minutos = Math.floor((tiempoRestanteMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            linkBadge.innerText = "CLAVE DEL DÍA (ACTIVA)";
+            linkBadge.style.borderColor = "#00ffcc";
+            linkBadge.style.color = "#00ffcc";
+            timerText.innerText = `Esta Key caduca y se parcha en: ${horas}h ${minutos}m`;
+            document.getElementById("keyDisplay").innerText = "APEX-" + secret + "-KEY";
+        } else {
+            // Claves extendidas del creador
+            linkBadge.innerText = "MOTOR MASIVO V3.5 (EXTENDIDO)";
+            linkBadge.style.borderColor = "#ffcc00";
+            linkBadge.style.color = "#ffcc00";
+            timerText.innerText = "Llave premium de larga duración activa.";
+            document.getElementById("keyDisplay").innerText = "APEX-" + secret + "-KEY";
         }
     }
 
-    // Calcula la clave vinculando la fecha actual + las modificaciones manuales de los botones
-    function generarPassword() {
-        const ahora = new Date();
-        
-        let addAnos = parseInt(document.getElementById('anos').innerText);
-        let addMeses = parseInt(document.getElementById('meses').innerText);
-        let addSemanas = parseInt(document.getElementById('semanas').innerText);
-        let addDias = parseInt(document.getElementById('dias').innerText);
-
-        let year = ahora.getUTCFullYear() + addAnos;
-        let month = ahora.getUTCMonth() + addMeses; 
-        let day = ahora.getUTCDate() + addDias + (addSemanas * 7);
-        
-        // Fórmula matemática exacta de tu script
-        const secret = Math.floor((year + month + day) * 7.7);
-        document.getElementById('outputPass').innerText = "APEX-" + secret + "-KEY";
+    function copiarKey() {
+        let text = document.getElementById("keyDisplay").innerText;
+        navigator.clipboard.writeText(text);
+        alert("¡Key copiada con éxito!");
     }
 
-    // Crea un pack masivo de claves consecutivas (para los siguientes días) en un .txt
-    function descargarPack() {
-        const cantidad = parseInt(document.getElementById('packSize').value);
-        let contenido = '';
-        
-        const ahora = new Date();
-        let baseYear = ahora.getUTCFullYear();
-        let baseMonth = ahora.getUTCMonth();
-        let baseDay = ahora.getUTCDate();
-
-        for (let i = 0; i < cantidad; i++) {
-            let tempDay = baseDay + i;
-            let secret = Math.floor((baseYear + baseMonth + tempDay) * 7.7);
-            contenido += "APEX-" + secret + "-KEY\n";
-        }
-
-        const blob = new Blob([contenido], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `pack_${cantidad}_keys.txt`;
-        link.click();
-    }
+    // Ejecutar contador en tiempo real cada minuto
+    setInterval(generarKey, 60000);
+    generarKey();
 </script>
-
 </body>
 </html>
+
