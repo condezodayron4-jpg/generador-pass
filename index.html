@@ -1,89 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Generador Unitaria V3.5</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .wrapper { border: 1px solid #333; border-radius: 20px; padding: 25px; width: 320px; background: #0a0a0a; text-align: center; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
-        .btn-counter { background: #222; border: 1px solid #444; color: #0f0; width: 40px; height: 35px; border-radius: 5px; cursor: pointer; }
-        .value-box { background: #000; border: 1px solid #333; width: 60px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .key-display { font-size: 20px; color: #555; margin: 20px 0; border: 1px dashed #333; padding: 10px; font-family: monospace; }
-        .timer { font-size: 18px; color: #555; font-weight: bold; margin-bottom: 20px; }
-        .btn-gen { background: #080; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        body { background: #000; color: #fff; font-family: monospace; display: flex; justify-content: center; padding: 20px; }
+        .box { width: 350px; background: #111; border: 1px solid #444; padding: 20px; border-radius: 15px; }
+        .row { display: flex; justify-content: space-between; margin: 10px 0; align-items: center; }
+        .val { background: #000; padding: 10px; border: 1px solid #555; width: 50px; text-align: center; }
+        .gen-btn { background: #080; width: 100%; padding: 15px; border: none; color: #fff; font-weight: bold; cursor: pointer; }
+        .historial { height: 300px; overflow-y: scroll; margin-top: 20px; border-top: 1px solid #333; }
+        .item { padding: 10px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .timer-text { color: #f90; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
+<div class="box">
     <h2>Generador Unitaria</h2>
-    <div id="controles">
-        <div class="row"><span>Años</span><div class="controls"><button class="btn-counter" onclick="cambiar('year', -1)">-</button><span class="value-box" id="year">0</span><button class="btn-counter" onclick="cambiar('year', 1)">+</button></div></div>
-        <div class="row"><span>Meses</span><div class="controls"><button class="btn-counter" onclick="cambiar('month', -1)">-</button><span class="value-box" id="month">0</span><button class="btn-counter" onclick="cambiar('month', 1)">+</button></div></div>
-        <div class="row"><span>Semanas</span><div class="controls"><button class="btn-counter" onclick="cambiar('week', -1)">-</button><span class="value-box" id="week">0</span><button class="btn-counter" onclick="cambiar('week', 1)">+</button></div></div>
-        <div class="row"><span>Días</span><div class="controls"><button class="btn-counter" onclick="cambiar('day', -1)">-</button><span class="value-box" id="day">0</span><button class="btn-counter" onclick="cambiar('day', 1)">+</button></div></div>
-    </div>
+    <div class="row">Años <button onclick="mod('anos',-1)">-</button><span class="val" id="anos">0</span><button onclick="mod('anos',1)">+</button></div>
+    <div class="row">Meses <button onclick="mod('meses',-1)">-</button><span class="val" id="meses">0</span><button onclick="mod('meses',1)">+</button></div>
+    <div class="row">Semanas <button onclick="mod('semanas',-1)">-</button><span class="val" id="semanas">0</span><button onclick="mod('semanas',1)">+</button></div>
+    <div class="row">Días <button onclick="mod('dias',-1)">-</button><span class="val" id="dias">0</span><button onclick="mod('dias',1)">+</button></div>
+    
+    <button class="gen-btn" onclick="generar()">GENERAR Y ACTIVAR RELOJ</button>
 
-    <div class="key-display" id="keyDisplay">APEX-00000000-KEY</div>
-    <div class="timer" id="timer">00d 00h 00m 00s</div>
-    <button class="btn-gen" onclick="generar()">GENERAR Y ACTIVAR</button>
+    <div class="historial" id="lista"></div>
 </div>
 
 <script>
-    let config = { year: 0, month: 0, week: 0, day: 0 };
-    let intervaloTimer = null;
+    let config = { anos:0, meses:0, semanas:0, dias:0 };
 
-    function cambiar(type, val) {
-        config[type] = Math.max(0, config[type] + val);
-        document.getElementById(type).innerText = config[type];
-        
-        // Reset visual si todo vuelve a cero
-        if (config.year === 0 && config.month === 0 && config.week === 0 && config.day === 0) {
-            clearInterval(intervaloTimer);
-            document.getElementById("keyDisplay").innerText = "APEX-00000000-KEY";
-            document.getElementById("keyDisplay").style.color = "#555";
-            document.getElementById("timer").innerText = "00d 00h 00m 00s";
-            document.getElementById("timer").style.color = "#555";
-        }
+    function mod(id, v) {
+        config[id] = Math.max(0, config[id] + v);
+        document.getElementById(id).innerText = config[id];
     }
 
     function generar() {
-        let totalMs = (config.year * 31536000000) + (config.month * 2592000000) + (config.week * 604800000) + (config.day * 86400000);
-        
-        if (totalMs === 0) { alert("¡Selecciona tiempo!"); return; }
+        let totalMs = (config.anos * 31536000000) + (config.meses * 2592000000) + (config.semanas * 604800000) + (config.dias * 86400000);
+        if(totalMs <= 0) return alert("Selecciona tiempo");
 
-        // 1. Generar Key "Infinitamente" única
-        // Usamos una cadena aleatoria compleja
-        let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let randomKey = "";
-        for (let i = 0; i < 8; i++) randomKey += chars.charAt(Math.floor(Math.random() * chars.length));
+        let fin = Date.now() + totalMs;
+        let key = "APEX-" + Math.floor(1000 + Math.random() * 9000) + "-KEY";
         
-        let display = document.getElementById("keyDisplay");
-        display.innerText = "APEX-" + randomKey + "-KEY";
-        display.style.color = "#0f0"; // Verde activo
+        let div = document.createElement('div');
+        div.className = 'item';
+        let timerId = 'timer_' + Date.now();
+        div.innerHTML = `<div><strong>${key}</strong><br><span id="${timerId}" class="timer-text">...</span></div>
+                         <button onclick="navigator.clipboard.writeText('${key}')">COPIAR</button>`;
+        document.getElementById('lista').prepend(div);
 
-        // 2. Iniciar Timer regresivo único
-        let fechaFin = Date.now() + totalMs;
-        let timerDisplay = document.getElementById("timer");
-        timerDisplay.style.color = "#f90"; // Naranja activo
-
-        if (intervaloTimer) clearInterval(intervaloTimer);
-        
-        intervaloTimer = setInterval(() => {
-            let resta = fechaFin - Date.now();
-            if (resta <= 0) {
-                clearInterval(intervaloTimer);
-                timerDisplay.innerText = "¡PARCHADO!";
-                display.style.color = "#555";
+        // Reloj que disminuye
+        let interval = setInterval(() => {
+            let diff = fin - Date.now();
+            if(diff <= 0) {
+                clearInterval(interval);
+                document.getElementById(timerId).innerText = "¡PARCHADO!";
+                document.getElementById(timerId).style.color = "#f00";
             } else {
-                let d = Math.floor(resta / 86400000);
-                let h = Math.floor((resta % 86400000) / 3600000);
-                let m = Math.floor((resta % 3600000) / 60000);
-                let s = Math.floor((resta % 60000) / 1000);
-                timerDisplay.innerText = `${d}d ${h}h ${m}m ${s}s`;
+                let h = Math.floor(diff / 3600000);
+                let m = Math.floor((diff % 3600000) / 60000);
+                let s = Math.floor((diff % 60000) / 1000);
+                document.getElementById(timerId).innerText = `${h}h ${m}m ${s}s`;
             }
         }, 1000);
+
+        // Reset inputs
+        config = { anos:0, meses:0, semanas:0, dias:0 };
+        document.querySelectorAll('.val').forEach(el => el.innerText = 0);
     }
 </script>
 </body>
